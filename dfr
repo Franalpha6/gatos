@@ -1,0 +1,123 @@
+Actúa como un experto en:
+- procesamiento de documentos (OCR)
+- análisis de actas corporativas
+- ingeniería de datos
+- automatización en Python
+
+Estoy construyendo un pipeline que:
+
+1) Recorre PDFs en esta estructura:
+   Z:\Mesa de Inversiones\Bottom-Up\0 Juntas de Accionistas\Actas
+   - Carpetas por año (ej: 2022, 2023, 2024)
+   - Dentro puede haber:
+        a) Subcarpetas de trimestre (ej: 1Q24, 2Q24, etc.)
+        b) PDFs sueltos (sin trimestre)
+
+2) Cada PDF contiene texto como imagen (OCR necesario)
+
+3) Quiero extraer información sobre remuneración de directores
+
+----------------------------------------
+OBJETIVO
+----------------------------------------
+
+Extraer:
+
+- Remuneración de Directorio
+- Remuneración de Comités
+
+Incluyendo:
+- pagos fijos
+- pagos por sesión
+- dietas
+- honorarios
+- compensaciones
+
+Considera múltiples términos:
+"remuneración", "retribución", "dieta", "honorarios", "pago", etc.
+
+----------------------------------------
+PROBLEMAS REALES A RESOLVER
+----------------------------------------
+
+- OCR puede tener errores
+- Empresas con nombres inconsistentes entre archivos
+- PDFs con estructura distinta
+- 20% de documentos con baja calidad
+- Información puede estar mal distribuida
+
+----------------------------------------
+REQUERIMIENTO DE SALIDA
+----------------------------------------
+
+Quiero generar un archivo Excel en:
+
+Z:\Mesa de Inversiones\Bottom-Up\0 Juntas de Accionistas\Actas
+
+Con:
+
+1) Una hoja por empresa (consolidando nombres similares)
+
+Cada hoja debe incluir:
+Tipo | Concepto | Monto | Frecuencia | Página | RutaArchivo | Año | Trimestre
+
+2) Una hoja adicional llamada "RESUMEN" con:
+
+Empresa | Concepto | Monto | Frecuencia | Página | Año | Trimestre
+
+Reglas:
+- Año = carpeta del archivo MÁS RECIENTE con datos válidos
+- Trimestre:
+    - si existe → usar
+    - si no → "Sin trimestre"
+
+----------------------------------------
+LO QUE QUIERO QUE HAGAS
+----------------------------------------
+
+1) Define la MEJOR arquitectura posible en Python para este problema:
+   - OCR
+   - parsing
+   - normalización de empresas
+   - consolidación
+
+2) Propón mejoras al flujo:
+   - cómo manejar errores OCR
+   - cómo mejorar precisión
+   - cómo deduplicar empresas
+   - cómo validar datos
+
+3) Diseña el formato de salida óptimo (DataFrames / estructuras)
+
+4) Luego genera el código Python completo que:
+   - recorra carpetas
+   - procese PDFs
+   - aplique OCR
+   - extraiga datos
+   - consolide por empresa
+   - genere Excel final con múltiples hojas + RESUMEN
+
+5) Incluye manejo de errores robusto:
+   - PDFs corruptos
+   - OCR fallido
+   - datos faltantes
+   - inconsistencias de nombres
+
+----------------------------------------
+RESTRICCIONES
+----------------------------------------
+
+- NO inventar datos
+- Tolerar errores OCR leves
+- Siempre incluir:
+   - ruta del archivo
+   - página
+   - año
+   - trimestre
+
+----------------------------------------
+TEXTO DE EJEMPLO (cuando aplique OCR)
+----------------------------------------
+
+{texto_ocr}
+``
