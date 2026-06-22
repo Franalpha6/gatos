@@ -1,0 +1,261 @@
+
+
+Quiero que modifiques mi script `dashboard_comite2.py`, que genera un dashboard geográfico (Leaflet) del Perú con distritos, riesgos físicos y activos, para **agregar una capa visual del Índice Térmico Costero Peruano (ITCP)** sobre la zona Niño 1+2 (litoral peruano).
+
+Esta modificación debe ser **aditiva, ligera, y no debe afectar la calidad visual del mapa principal de Perú**.
+
+
+
+# 🎯 OBJETIVO
+
+Agregar una **capa visual sobre el mar frente al Perú (zona Niño 1+2)** que:
+
+* refleje el estado actual del ITCP (leído desde el archivo existente del proyecto)
+* use una codificación visual clara pero **no invasiva**
+* se comporte como **contexto climático de fondo**, no como elemento principal
+* se integre correctamente con Leaflet sin romper la lógica actual
+
+***
+
+# ⚙️ 1) LECTURA DEL ITCP (PYTHON)
+
+Agregar una función en `dashboard_comite2.py` que:
+
+* lea el archivo:
+
+```
+Inputs/indicadores_franco.xlsx
+```
+
+* abra la hoja `"ITCP"`
+* obtenga el **último valor disponible (última fecha válida)**
+
+Clasificar el valor usando estos intervalos:
+
+```python
+if itcp > 0.4:
+    categoria = "calida"
+elif itcp < -0.6:
+    categoria = "fria"
+else:
+    categoria = "neutro"
+```
+
+Inyectar al payload HTML:
+
+```json
+{
+  "itcp": {
+    "valor": 0.85,
+    "categoria": "calida"
+  }
+}
+```
+
+***
+
+# 🌊 2) DEFINICIÓN DE LA ZONA NIÑO 1+2
+
+Construir una geometría SIMPLE (sin shapely) que represente el mar frente a Perú.
+
+Usar un bounding box aproximado:
+
+```
+Latitud:  0   a  -15
+Longitud: -90 a  -78   (IMPORTANTE: no invadir tierra)
+```
+
+⚠️ Ajustar el límite este (\~ -78) para evitar cubrir el territorio peruano.
+
+Debe ser:
+
+* un `polygon` o `rectangle` simple
+* lo suficientemente preciso visualmente
+* liviano (sin raster complejo)
+
+***
+
+# 🗺️ 3) RENDERIZADO EN LEAFLET (HTML/JS)
+
+Modificar el `_HTML_TEMPLATE` para agregar una nueva capa:
+
+## a. Crear capa ITCP
+
+```js
+const coloresITCP = {
+  calida: "#f4a6a0",   // rojo suave (NO saturado)
+  neutro: "#e0e0e0",   // gris claro
+  fria: "#a8c9e8"      // azul suave
+};
+```
+
+Crear un polígono:
+
+```js
+const itcpLayer = L.polygon(coords, {
+  fillColor: coloresITCP[categoria],
+  fillOpacity: 0.18,
+  stroke: false
+});
+```
+
+***
+
+## b. Orden de capas (CRÍTICO)
+
+El orden debe ser:
+
+1. fondo (océano)
+2. ✅ ITCP (nuevo)
+3. distritos (GeoJSON)
+4. íconos (activos)
+
+Esto es obligatorio.
+
+***
+
+## c. Tooltip simple
+
+Al hacer hover o click:
+
+```
+ITCP: 0.85
+Condición: Cálida
+```
+
+***
+
+# 🎨 4) REGLAS DE DISEÑO (CRÍTICO – UX)
+
+La capa ITCP **NO debe competir visualmente con el mapa del Perú**.
+
+Implementar obligatoriamente:
+
+### ✅ Colores
+
+* Suaves (pastel)
+* Nunca saturados
+
+### ✅ Opacidad
+
+```js
+fillOpacity: 0.15 – 0.20 (máximo)
+```
+
+### ✅ Bordes
+
+```js
+stroke: false
+```
+
+### ✅ Prioridad visual
+
+* El mapa de distritos SIEMPRE debe dominar visualmente
+
+***
+
+# 🚫 RESTRICCIONES IMPORTANTES
+
+❌ No usar:
+
+* colores intensos (rojo fuerte, azul fuerte)
+* bordes visibles
+* overlays opacos
+* raster pesado o librerías externas
+
+❌ No modificar:
+
+* lógica de distritos
+* colores del choropleth
+* íconos o tamaños
+* drill-down geográfico
+
+***
+
+# 🔍 5) COMPORTAMIENTO INTELIGENTE
+
+Agregar mejoras de UX:
+
+### ✅ Toggle ON/OFF
+
+Agregar control:
+
+```
+[ ] Mostrar ITCP
+```
+
+Default: OFF
+
+***
+
+### ✅ Visibilidad por zoom
+
+Solo mostrar ITCP si:
+
+```js
+map.getZoom() >= 5
+```
+
+***
+
+### ✅ Transición suave
+
+```js
+style.transition = "opacity 0.3s ease";
+```
+
+***
+
+# 🧠 6) PRINCIPIO FUNDAMENTAL (MUY IMPORTANTE)
+
+La capa ITCP debe comportarse como:
+
+👉 **background climático contextual**
+
+NO como una capa principal.
+
+Esto significa que:
+
+* debe ser perceptible sin distraer
+* no debe tapar información
+* no debe competir con distritos ni activos
+
+Si la legibilidad del mapa se reduce, reducir opacidad hasta que el mapa de Perú vuelva a ser dominante.
+
+***
+
+# ✅ RESULTADO ESPERADO
+
+* El mapa actual se mantiene intacto
+* Aparece una capa suave en el mar:
+  * roja suave / gris / azul suave
+* Se percibe como contexto climático
+* No interfiere con:
+  * distritos
+  * activos
+  * interacción
+
+***
+
+# 🧠 NOTA FINAL PARA IMPLEMENTACIÓN
+
+No intentes replicar un mapa tipo SENAMHI con grillas complejas.
+
+La solución debe ser:
+
+* liviana
+* geométricamente simple
+* visualmente elegante
+
+***
+
+# ✅ RESUMEN EN 1 LÍNEA
+
+Agregar una capa semitransparente, suave y no invasiva sobre la zona Niño 1+2 que represente el estado del ITCP sin afectar la claridad del mapa geográfico del Perú.
+
+***
+
+
+quiero que a dichas graficas del mapa interactivo ya no contengan iconos segun sectores o empresa, sino simplemente se usen pelotas asi como ya lo hace con muchas otras, pero ahora uniformice estas representaciones visuales para todas las empres, mas no quite ni la logica del tamaño de estas pelotas, y se diferencie de distinto color entre empresas del sector A con las del sector B, asi como por ejemplo quisiera que el sector Financiero tenga pelotas color azul, la de Minería tenga color oro, en Utilities un color verde, y asi. Y una tercera mejora es que quiero añadir un cuadro interactivo y dinamico debajo de este chart interactivo del mapa de peru que logre mostrar un sector elegido o sectores elegidos en caso el usuario no elija ningun sector y por default muestre el mapa de peru todos los sectores. La idea con este cuadro debajo del mapa como chart tipo tabla interactivo debajo tenga relacion con lo que el usuario manipule en los selectores del chart del mapa de peru en cada desastre natural cenepred (Movimientos de Masa, Inundación, Sequías Severas
+). Entonces el chart toipo tabla adicionaL debe tener solo dos columnas "Riesgo" y "AUM Total". La idea de este chart tipo tabla que agregaremos es mostrar cuanto de plata de todo el sector elegido o sectores elegidos (por default) representa respecto al AUM totalde todos los instrumentos.
+Si después quieres, puedo darte directamente el **bloque de código listo para pegar (Python + JS exacto)** para que no dependas de Claude.
