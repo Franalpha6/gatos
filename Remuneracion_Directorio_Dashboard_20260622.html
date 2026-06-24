@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remuneración del Directorio — Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{ --azul:#1F3864; --celeste:#4472C4; --fondo:#D9E1F2; --borde:#BFBFBF; --gris:#808080;}
+  *{box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;margin:0;background:#f4f6fb;color:#1a1a1a;}
+  header{background:var(--azul);color:#fff;padding:22px 32px;}
+  header h1{margin:0;font-size:20px;font-weight:600;}
+  header p{margin:4px 0 0;font-size:13px;opacity:.85;}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 32px 60px;}
+  section{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:20px 22px;margin-bottom:26px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  h2{color:var(--azul);font-size:16px;margin:0 0 14px;border-bottom:2px solid var(--fondo);padding-bottom:8px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;}
+  th,td{border:1px solid var(--borde);padding:6px 9px;}
+  th{background:var(--azul);color:#fff;font-weight:600;text-align:center;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  td.ctr{text-align:center;}
+  tr.sector td{background:var(--celeste);color:#fff;font-weight:700;letter-spacing:.3px;}
+  tr.empresa:nth-child(even) td{background:#fafbfe;}
+  .controls{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .controls label{font-size:13px;color:var(--azul);font-weight:600;}
+  select{padding:5px 9px;border:1px solid var(--borde);border-radius:6px;font-size:13px;background:#fff;}
+  .chart-box{position:relative;height:420px;}
+  .nota{font-size:12px;color:var(--gris);font-style:italic;margin-top:10px;}
+  .pill{display:inline-block;background:var(--fondo);color:var(--azul);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:600;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Remuneración del Directorio — Estimación bottom-up</h1>
+  <p>Generado el 22-06-2026 12:53 · Valores en miles (000) en la moneda de cada empresa · Estimación aproximada.</p>
+</header>
+<div class="wrap">
+
+  <section>
+    <h2>1 · Tabla principal</h2>
+    <div id="tabla-principal"></div>
+    <div class="nota">Prom/Director = remuneración estimada de la empresa / n.º de directores, en la moneda de la empresa.</div>
+  </section>
+
+  <section>
+    <h2>2 · Ranking por remuneración total</h2>
+    <div class="controls">
+      <label>Año <select id="rk-anio"></select></label>
+      <label>Sector <select id="rk-sector"></select></label>
+    </div>
+    <div class="chart-box"><canvas id="rk-chart"></canvas></div>
+  </section>
+
+  <section>
+    <h2>3 · Promedio por director (comparativo por sector)</h2>
+    <div class="controls">
+      <label>Sector <select id="cmp-sector"></select></label>
+    </div>
+    <div class="chart-box"><canvas id="cmp-chart"></canvas></div>
+  </section>
+
+  <section>
+    <h2>4 · Evolución histórica</h2>
+    <div id="evo-nota"></div>
+    <div class="chart-box"><canvas id="evo-chart"></canvas></div>
+  </section>
+
+  <section>
+    <h2>5 · Comités</h2>
+    <div id="tabla-comites"></div>
+  </section>
+
+</div>
+<script>
+const DATA = {"anio_n1": 2025, "anio_n2": 2024, "anios": [2024, 2025], "generado": "22-06-2026 12:53", "sectores": [{"nombre": "Mineras", "empresas": ["Buenaventura", "Cerro Verde", "Minsur", "Volcan", "Nexa Perú", "Hochshild"]}, {"nombre": "Utilities", "empresas": ["Orygen", "Pluz Energia", "Engie"]}, {"nombre": "Construcción", "empresas": ["Ferreycorp", "Aenza", "UNACEM", "Pacasmayo"]}, {"nombre": "Consumo", "empresas": ["InRetail", "Alicorp"]}, {"nombre": "Financieras", "empresas": ["Credicorp", "IFS", "BBVA"]}], "empresas": {"Buenaventura": {"sector": "Mineras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 9, "prom": null}, "2025": {"rem": null, "ndir": null, "prom": null}}}, "Cerro Verde": {"sector": "Mineras", "moneda": "-", "por_anio": {"2024": {"rem": null, "ndir": null, "prom": null}, "2025": {"rem": null, "ndir": null, "prom": null}}}, "Minsur": {"sector": "Mineras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 9, "prom": null}, "2025": {"rem": null, "ndir": null, "prom": null}}}, "Volcan": {"sector": "Mineras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 12, "prom": null}, "2025": {"rem": null, "ndir": 7, "prom": null}}}, "Nexa Perú": {"sector": "Mineras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 5, "prom": null}, "2025": {"rem": null, "ndir": 5, "prom": null}}}, "Hochshild": {"sector": "Mineras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 3, "prom": null}, "2025": {"rem": null, "ndir": 4, "prom": null}}}, "Orygen": {"sector": "Utilities", "moneda": "USD", "por_anio": {"2024": {"rem": 267.7, "ndir": 14, "prom": 19.1}, "2025": {"rem": 135.9, "ndir": 7, "prom": 19.4}}}, "Pluz Energia": {"sector": "Utilities", "moneda": "USD", "por_anio": {"2024": {"rem": 350.0, "ndir": 13, "prom": 26.9}, "2025": {"rem": 504.0, "ndir": 9, "prom": 56.0}}}, "Engie": {"sector": "Utilities", "moneda": "USD", "por_anio": {"2024": {"rem": 1155.0, "ndir": 9, "prom": 128.3}, "2025": {"rem": 1145.0, "ndir": 9, "prom": 127.2}}}, "Ferreycorp": {"sector": "Construcción", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 9, "prom": null}, "2025": {"rem": null, "ndir": 9, "prom": null}}}, "Aenza": {"sector": "Construcción", "moneda": "PEN", "por_anio": {"2024": {"rem": 249486.0, "ndir": 12, "prom": 20790.5}, "2025": {"rem": 324912.0, "ndir": 10, "prom": 32491.2}}}, "UNACEM": {"sector": "Construcción", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 12, "prom": null}, "2025": {"rem": null, "ndir": 11, "prom": null}}}, "Pacasmayo": {"sector": "Construcción", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 7, "prom": null}, "2025": {"rem": null, "ndir": 7, "prom": null}}}, "InRetail": {"sector": "Consumo", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 8, "prom": null}, "2025": {"rem": null, "ndir": 8, "prom": null}}}, "Alicorp": {"sector": "Consumo", "moneda": "USD", "por_anio": {"2024": {"rem": 15450.0, "ndir": 9, "prom": 1716.7}, "2025": {"rem": 19050.0, "ndir": 12, "prom": 1587.5}}}, "Credicorp": {"sector": "Financieras", "moneda": "USD", "por_anio": {"2024": {"rem": 109.5, "ndir": 9, "prom": 12.2}, "2025": {"rem": 114.8, "ndir": 9, "prom": 12.8}}}, "IFS": {"sector": "Financieras", "moneda": "PEN", "por_anio": {"2024": {"rem": null, "ndir": 7, "prom": null}, "2025": {"rem": null, "ndir": 7, "prom": null}}}, "BBVA": {"sector": "Financieras", "moneda": "PEN", "por_anio": {"2024": {"rem": 6835.7, "ndir": 12, "prom": 569.6}, "2025": {"rem": 5981.2, "ndir": 12, "prom": 498.4}}}}, "comites": {"Buenaventura": {"n_comites": 5, "directores_participan": 12, "sesiones_total": 14}, "Minsur": {"n_comites": 2, "directores_participan": 7, "sesiones_total": 6}, "Volcan": {"n_comites": 4, "directores_participan": 6, "sesiones_total": 31}, "Nexa Perú": {"n_comites": 1, "directores_participan": 3, "sesiones_total": 6}, "Hochshild": {"n_comites": 1, "directores_participan": 0, "sesiones_total": 0}, "Orygen": {"n_comites": 2, "directores_participan": 5, "sesiones_total": 4}, "Pluz Energia": {"n_comites": 3, "directores_participan": 9, "sesiones_total": 10}, "Engie": {"n_comites": 3, "directores_participan": 15, "sesiones_total": 12}, "Ferreycorp": {"n_comites": 4, "directores_participan": 8, "sesiones_total": 13}, "Aenza": {"n_comites": 4, "directores_participan": 9, "sesiones_total": 36}, "UNACEM": {"n_comites": 5, "directores_participan": 13, "sesiones_total": 42}, "Pacasmayo": {"n_comites": 5, "directores_participan": 9, "sesiones_total": 32}, "InRetail": {"n_comites": 1, "directores_participan": 4, "sesiones_total": 4}, "Alicorp": {"n_comites": 4, "directores_participan": 13, "sesiones_total": 21}, "Credicorp": {"n_comites": 4, "directores_participan": 9, "sesiones_total": 21}, "IFS": {"n_comites": 1, "directores_participan": 4, "sesiones_total": 7}, "BBVA": {"n_comites": 5, "directores_participan": 13, "sesiones_total": 21}}};
+const PALETA = ["#1F3864","#4472C4","#8FAADC","#2E75B6","#C55A11","#548235",
+                "#7030A0","#BF9000","#D9534F","#5BC0DE","#00876C","#A0522D"];
+const fmt = v => (v===null||v===undefined) ? "-" : v.toLocaleString("es-PE");
+
+function empresasOrden(){ // respeta el orden de SECTORES
+  let out=[]; DATA.sectores.forEach(s=>s.empresas.forEach(e=>{ if(DATA.empresas[e]) out.push(e); })); return out;
+}
+function color(i){ return PALETA[i % PALETA.length]; }
+
+/* ---- Seccion 1: tabla principal ---- */
+(function(){
+  const n1=DATA.anio_n1, n2=DATA.anio_n2;
+  let h = "<table><thead><tr><th>Empresa</th><th>Moneda</th>"
+        + "<th>Remun "+n1+"</th><th>Remun "+n2+"</th>"
+        + "<th>N° Dir "+n1+"</th><th>N° Dir "+n2+"</th>"
+        + "<th>Prom/Dir "+n1+"</th><th>Prom/Dir "+n2+"</th></tr></thead><tbody>";
+  DATA.sectores.forEach(sec=>{
+    const emps = sec.empresas.filter(e=>DATA.empresas[e]);
+    if(!emps.length) return;
+    h += "<tr class='sector'><td colspan='8'>"+sec.nombre+"</td></tr>";
+    emps.forEach(e=>{
+      const E=DATA.empresas[e], a1=E.por_anio[n1]||{}, a2=E.por_anio[n2]||{};
+      h += "<tr class='empresa'><td>"+e+"</td><td class='ctr'>"+E.moneda+"</td>"
+         + "<td class='num'>"+fmt(a1.rem)+"</td><td class='num'>"+fmt(a2.rem)+"</td>"
+         + "<td class='ctr'>"+fmt(a1.ndir)+"</td><td class='ctr'>"+fmt(a2.ndir)+"</td>"
+         + "<td class='num'>"+fmt(a1.prom)+"</td><td class='num'>"+fmt(a2.prom)+"</td></tr>";
+    });
+  });
+  h += "</tbody></table>";
+  document.getElementById("tabla-principal").innerHTML = h;
+})();
+
+/* ---- Seccion 2: ranking ---- */
+(function(){
+  const selA=document.getElementById("rk-anio"), selS=document.getElementById("rk-sector");
+  [DATA.anio_n1, DATA.anio_n2].forEach(a=>selA.add(new Option(a,a)));
+  selS.add(new Option("Todos","__all__"));
+  DATA.sectores.forEach(s=>selS.add(new Option(s.nombre,s.nombre)));
+  let chart=null;
+  function render(){
+    const anio=selA.value, sector=selS.value;
+    let emps = empresasOrden().filter(e=> sector==="__all__" || DATA.empresas[e].sector===sector);
+    let rows = emps.map(e=>({e, v:(DATA.empresas[e].por_anio[anio]||{}).rem, m:DATA.empresas[e].moneda}))
+                   .filter(r=> r.v!==null && r.v!==undefined)
+                   .sort((a,b)=>b.v-a.v);
+    const labels=rows.map(r=>r.e), vals=rows.map(r=>r.v);
+    if(chart) chart.destroy();
+    chart=new Chart(document.getElementById("rk-chart"),{
+      type:"bar",
+      data:{labels,datasets:[{label:"Remuneración (000) "+anio,data:vals,
+            backgroundColor:labels.map((_,i)=>color(i))}]},
+      options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:c=>fmt(c.parsed.x)+" mil "+(rows[c.dataIndex].m||"")}}},
+        scales:{x:{ticks:{callback:v=>fmt(v)}}}}
+    });
+  }
+  selA.onchange=render; selS.onchange=render; render();
+})();
+
+/* ---- Seccion 3: comparativo prom/director por sector ---- */
+(function(){
+  const selS=document.getElementById("cmp-sector");
+  DATA.sectores.forEach((s,i)=>selS.add(new Option(s.nombre,s.nombre)));
+  let chart=null;
+  function render(){
+    const sector=selS.value, n1=DATA.anio_n1, n2=DATA.anio_n2;
+    const emps=(DATA.sectores.find(s=>s.nombre===sector)||{empresas:[]}).empresas.filter(e=>DATA.empresas[e]);
+    const d1=emps.map(e=>(DATA.empresas[e].por_anio[n1]||{}).prom);
+    const d2=emps.map(e=>(DATA.empresas[e].por_anio[n2]||{}).prom);
+    if(chart) chart.destroy();
+    chart=new Chart(document.getElementById("cmp-chart"),{
+      type:"bar",
+      data:{labels:emps,datasets:[
+        {label:"Prom/Dir "+n1,data:d1,backgroundColor:"#1F3864"},
+        {label:"Prom/Dir "+n2,data:d2,backgroundColor:"#8FAADC"}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+": "+fmt(c.parsed.y)+" mil"}}},
+        scales:{y:{ticks:{callback:v=>fmt(v)}}}}
+    });
+  }
+  selS.onchange=render; render();
+})();
+
+/* ---- Seccion 4: evolucion historica ---- */
+(function(){
+  const anios=DATA.anios.slice().sort((a,b)=>a-b);
+  if(anios.length<=2){
+    document.getElementById("evo-nota").innerHTML="<span class='pill'>solo 2 años disponibles</span>";
+  }
+  const emps=empresasOrden();
+  const datasets=emps.map((e,i)=>({
+    label:e,
+    data:anios.map(a=>(DATA.empresas[e].por_anio[a]||{}).rem),
+    borderColor:color(i),backgroundColor:color(i),tension:.25,spanGaps:true,fill:false
+  }));
+  new Chart(document.getElementById("evo-chart"),{
+    type:"line",
+    data:{labels:anios,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+": "+fmt(c.parsed.y)+" mil"}}},
+      scales:{y:{ticks:{callback:v=>fmt(v)}}}}
+  });
+})();
+
+/* ---- Seccion 5: tabla de comites ---- */
+(function(){
+  let h="<table><thead><tr><th>Empresa</th><th>N° comités</th>"
+       +"<th>Directores en ≥1 comité</th><th>Sesiones de comité (total)</th></tr></thead><tbody>";
+  DATA.sectores.forEach(sec=>{
+    const emps=sec.empresas.filter(e=>DATA.comites[e]);
+    if(!emps.length) return;
+    h+="<tr class='sector'><td colspan='4'>"+sec.nombre+"</td></tr>";
+    emps.forEach(e=>{
+      const C=DATA.comites[e];
+      h+="<tr class='empresa'><td>"+e+"</td><td class='ctr'>"+fmt(C.n_comites)+"</td>"
+        +"<td class='ctr'>"+fmt(C.directores_participan)+"</td>"
+        +"<td class='ctr'>"+fmt(C.sesiones_total)+"</td></tr>";
+    });
+  });
+  h+="</tbody></table>";
+  document.getElementById("tabla-comites").innerHTML=h;
+})();
+</script>
+</body>
+</html>
