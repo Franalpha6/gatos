@@ -1,0 +1,30 @@
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[7], line 44
+     40 from selenium.webdriver.common.by import By
+     41 from selenium.webdriver.support import expected_conditions as EC
+     42 from selenium.webdriver.support.ui import WebDriverWait
+     43 
+---> 44 import win32com.client as win32
+     45 
+     46 
+     47 # ─────────────────────────────────────────────────────────────────────────────
+
+File ~\AppData\Roaming\Python\Python314\site-packages\win32com\__init__.py:9
+      6 import os
+      7 import sys
+----> 9 import pythoncom
+     10 import win32api
+     12 __frozen: str | bool = getattr(sys, "frozen", False)
+
+File ~\AppData\Roaming\Python\Python314\site-packages\pythoncom.py:4
+      1 # Magic utility that "redirects" to pythoncomXX.dll
+      2 from typing import Any
+----> 4 import pywintypes
+      6 pywintypes.__import_pywin32_system_module__("pythoncom", globals())
+      9 # This module dynamically re-exports from a C-Extension.
+     10 # `__getattr__() -> Any` prevents checkers attribute access errors
+     11 # without the use of external type stubs.
+     12 # So keep an empty stub behind `if TYPE_CHECKING` if pythoncom.frozen support is removed.
+
+ModuleNotFoundError: No module named 'pywintypes'
