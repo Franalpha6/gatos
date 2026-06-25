@@ -1,0 +1,138 @@
+[INFO] ============================================================
+[INFO] ANÁLISIS DE RIESGOS FÍSICOS DE CARTERA (MINERÍA + FINANCIERO) — INICIO
+[INFO] ============================================================
+[INFO] Producción : Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Inputs\Producción Minera 2025.xlsx
+[INFO] Riesgos    : Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Riesgos Fisicos (Mapa Distrital) - 2026.xlsx
+[INFO] GeoJSON local: Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\peru_distritos.geojson
+[INFO] Suplemento GeoJSON aplicado: 2 distrito(s) añadido(s), 2 reemplazado(s).
+[INFO] CENEPRED: 332 distritos con score.
+[INFO] Producción minera: peso = suma del semestre anterior (Julio–Diciembre); 6 mes(es).
+[INFO] Producción: 824 filas válidas; 74 de las empresas del universo (7 empresas).
+[INFO] Exposición: S/ 2,990,649,993 en 6 empresas.
+[INFO] Financiero : Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Inputs\B-2358-resumen-012026.xlsx
+[WARN] Bancos en el resumen NO mapeados al portafolio (se omiten). Si alguno debe incluirse, agrégalo a EQUIV_EMPRESAS_FINANCIERO en CONFIG:
+[WARN]       · 'ALFIN BANCO'
+[WARN]       · 'BANBIF'
+[WARN]       · 'BANCO BCI'
+[WARN]       · 'BANCO FALABELLA'
+[WARN]       · 'BANCO GNB'
+[WARN]       · 'BANCO PICHINCHA'
+[WARN]       · 'BANCO RIPLEY'
+[WARN]       · 'BANCOM2'
+[WARN]       · 'BANK OF CHINA (PERU)'
+[WARN]       · 'CITIBANK DEL PERU'
+[WARN]       · 'COMPARTAMOS BANCO'
+[WARN]       · 'ICBC PERU BANK S.A.'
+[WARN]       · 'SANTANDER CONSUMER BANK'
+[WARN]       · 'SANTANDER PERU'
+[WARN]       · 'SCOTIABANK PERU'
+[INFO] Financiero: 1006 filas leídas; 538 de bancos del universo (3 bancos).
+[INFO] Exposición financiera: S/ 2,203,297,911 en 3 entidad(es).
+[INFO]       [Credicorp] = Credicorp: S/ 1,450,946,652; Banco de Crédito del Perú: S/ 350,985,963
+[INFO]       [Intercorp Perú] = Interbank: S/ 242,969,089; Intercorp Perú: S/ 92,457,702
+[INFO]       [BBVA] = BBVA: S/ 65,938,505
+[WARN]       Nombres en col H que parecen del sector y NO están mapeados (revisa la equivalencia de exposición):
+[WARN]         · 'BlackRock - iShares Euro Stoxx Banks 30-15 UCITS'  (S/ 429,087,833)
+[WARN]         · 'BBVA Bancomer'  (S/ 198,118,826)
+[WARN]         · 'Bancolombia'  (S/ 109,572,653)
+[WARN]         · 'BlueBay - Financial Capital Bond - E'  (S/ 104,834,203)
+[WARN]         · 'Banco Davivienda S.A.'  (S/ 65,515,442)
+[WARN]         · 'Sura Credicorp Infraestructura'  (S/ 55,948,809)
+[WARN]         · 'BCP Fondo Inmobiliario'  (S/ 46,486,643)
+[WARN]         · 'Banco de Crédito e Inversiones'  (S/ 17,937,711)
+[WARN]         · 'Banco de la Nación'  (S/ 5,479,727)
+[INFO] Excluidas 1 fila(s) de Financiero en el EXTRANJERO (sin riesgo físico en Perú): 797,987.65 miles S/.
+[WARN] 1 fila(s) de Financiero NO geocodificadas (70,776.90 miles S/). Detalle por motivo:
+[WARN]       Tacna / Tacna / Coronel Gregorio Albarracín L  [no_encontrado]  filas=1
+[INFO] Utilities  : \\sppeapp00023\Inversiones\Mesa de Inversiones\Bottom-Up\1 Proceso de Inversión Renta Variable\Proyecto Inputs Macro\BD Utilities.xlsm
+C:\Users\p048546\PyCharmMiscProject\.venv\Lib\site-packages\openpyxl\worksheet\_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+  warn(msg)
+[INFO] Utilities: sumando potencia efectiva del semestre anterior (2025-07 a 2025-12); 6 columna(s).
+[INFO] Ubicaciones 'Centrales Eléctricas': 36 activos cargados.
+[WARN] 1 central(es) de generación SIN ubicación en la hoja 'Centrales Eléctricas'. Agrégalas ahí (columnas Central/Empresa/Departamento/Provincia/Distrito):
+[WARN]       · Engie | 'NE - PUERTO ILO' | 70.62 MW  -> falta su fila en la hoja
+[INFO] Utilities: 24 central(es) ubicadas de 3 empresa(s).
+[INFO] Exposición utilities: S/ 511,600,588 en 3 entidad(es).
+[INFO]       [Orygen] = Orygen: S/ 152,304,248
+[INFO]       [Engie] = Engie: S/ 220,323,925
+[INFO]       [Orazen] = Orazen: S/ 138,972,415
+[INFO] Construcción: \\sppeapp00023\Inversiones\Mesa de Inversiones\Bottom-Up\1 Proceso de Inversión Renta Variable\Proyecto Inputs Macro\BD Construcción.xlsm
+[INFO] Construcción: sumando despachos del semestre anterior (2025-07 a 2025-12); 6 columna(s).
+[INFO] Ubicaciones 'Centrales Eléctricas': 36 activos cargados.
+[INFO] Construcción: 5 planta-distrito de 2 empresa(s).
+[INFO] Exposición construcción: S/ 374,941,130 en 2 entidad(es).
+[INFO]       [Unacem] = Unacem: S/ 123,979,625
+[INFO]       [Pacasmayo] = Pacasmayo: S/ 250,961,505
+[INFO] Exposición empresas-hoja: S/ 2,859,422,546 en 18 entidad(es).
+[INFO]       [Aenza] = Aenza: S/ 59,060,165
+[INFO]       [Alicorp] = Alicorp: S/ 351,812,912
+[INFO]       [Auna] = Auna: S/ 148,605,548
+[INFO]       [Ferreycorp] = Ferreycorp: S/ 536,540,055
+[INFO]       [Pluz Energía] = Pluz Energía: S/ 89,230,554
+[INFO]       [Puerto Chancay] = Puerto Chancay: S/ 54,821,451
+[INFO]       [Casa Andina] = Casa Andina: S/ 28,177,240
+[INFO]       [Colegios Peruanos] = PF Colegios Peruanos: S/ 141,652,132
+[INFO]       [Hermes] = Hermes: S/ 6,957,636
+[INFO]       [Hunt Oil] = Hunt Oil: S/ 87,927,411
+[INFO]       [Inca Rail] = Inca Rail: S/ 30,547,552
+[INFO]       [InRetail] = InRetail Peru: S/ 472,877,941; InRetail Consumer: S/ 169,163,335; InRetail Shopping Malls: S/ 110,460,796
+[INFO]       [Intursa] = Inversiones Nacionales de Turismo: S/ 116,682,275
+[INFO]       [Jockey Plaza] = Jockey Plaza: S/ 57,157,116
+[INFO]       [Lima Expresa] = Línea Amarilla: S/ 264,063,963
+[INFO]       [Primax] = Primax: S/ 51,254,539
+[INFO]       [Tecsup] = Tecsup: S/ 1,764,204
+[INFO]       [Rutas de Lima] = Rutas de Lima: S/ 80,665,720
+[INFO] Integrando empresas con hoja propia (peso = % de distribución):
+[INFO]    [Aenza] 50 ubicación(es) | peso='%' | suma=10.0000
+[INFO]    [Alicorp] 18 ubicación(es) | peso='Participación %' | suma=1.0000
+[INFO]    [Auna] 15 ubicación(es) | peso='Peso Servicios' | suma=25.0000
+[INFO]    [Ferreycorp] 47 ubicación(es) | peso='Participación %' | suma=1.0000
+[INFO]    [Pluz Energía] 68 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [Puerto Chancay] 1 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [Casa Andina] 46 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Colegios Peruanos] 58 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Hermes] 19 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Hunt Oil] 5 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Inca Rail] 4 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [InRetail] 21 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [Intursa] 6 ubicación(es) | peso='% Criterio (Ingresos)' | suma=1.0000
+[WARN]    [Jockey Plaza] columna de peso vacía; reparto equitativo (1/2).
+[INFO]    [Jockey Plaza] 2 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [Lima Expresa] 15 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Primax] 217 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[INFO]    [Tecsup] 3 ubicación(es) | peso='% Porcentaje' | suma=1.0000
+[INFO]    [Rutas de Lima] 7 ubicación(es) | peso='% Criterio (las ubicaciones pesan igual)' | suma=1.0000
+[WARN] 1 fila(s) de Infraestructura NO geocodificadas (0.12 TMF). Detalle por motivo:
+[WARN]       Ica / Nasca / Nasca  [no_encontrado]  filas=1
+[WARN] 3 fila(s) de Consumo NO geocodificadas (0.03 TMF). Detalle por motivo:
+[WARN]       Ica / Nasca / Nasca  [no_encontrado]  filas=3
+[WARN] 3 fila(s) de Energía NO geocodificadas (0.60 TMF). Detalle por motivo:
+[WARN]       Cusco / La Convencion / Megantoni  [no_encontrado]  filas=3
+[INFO] Empresas-hoja integradas: 18 en 6 sector(es) (Consumo, Educación, Energía, Infraestructura, Salud, Utilities).
+[INFO] ENFEN: 126 meses leídos (2016-01 a 2026-06).
+[INFO] Clima: 7 indicador(es) cargado(s): ICEN, MEIv2, ONI, NINO1+2, ERSSTv5, ITCP, LABCOS.
+[INFO] SBS: 3 banco(s), 5 indicador(es) homologados. Default: 'Créditos Refinanciados y Reestructurados / Créditos Directos'.
+[INFO]       · Créditos Refinanciados y Reestructurados / Créditos Directos: 2001-01 -> 2026-04
+[INFO]       · Morosidad: Créditos Atrasados / Créditos Directos: 2001-01 -> 2026-04
+[INFO]       · Provisiones / Créditos Atrasados: 2001-01 -> 2026-04
+[INFO]       · ROAA: 2005-01 -> 2026-04
+[INFO]       · ROEA: 2005-01 -> 2026-04
+C:\Users\p048546\PyCharmMiscProject\.venv\Lib\site-packages\openpyxl\worksheet\_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+  warn(msg)
+[WARN] BD Prod: no se hallaron columnas ETAPA/TITULAR en la fila 1.
+[INFO] Utilities (serie mensual): 3 empresa(s), hasta 2026-03.
+[INFO] Construcción (serie mensual): 2 empresa(s), hasta 2026-02.
+[INFO] Excel generado : Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\Riesgos_Fisicos_Cartera_20260624_2344.xlsx
+[INFO] Logo embebido desde Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Inputs\integra_logo.png.
+[INFO] HTML generado  : Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\Mapa_Riesgos_Fisicos_20260624_2344.html
+[WARN] No se pudo generar la extensión RF (el dashboard original no se afecta): No module named 'rf_extension'
+[INFO] [Activos] Tipo de cambio USD leído: 3.3609 (fecha 31/12/2025).
+[INFO] [Activos] Mitigantes: usando hoja '2S25'.
+[INFO] [Activos] HTML generado: Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\Dashboard_Activos_Riesgo_20260624_2344.html
+[INFO] [Activos] No se pudo generar el Excel de riesgos: name '_periodo_actual' is not defined
+[INFO] [FEN_Apoyo] 25 departamentos cargados, categorías: ['Lluvias', 'Temperaturas y Lluvias', 'Sequías', 'Sin Impacto'], regiones: [].
+[INFO] [FEN_Apoyo] HTML generado: Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\FEN_Impacto_20260624_2344.html
+[INFO] [FEN_Apoyo] HTML FEN generado: Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Output\FEN_Impacto_20260624_2344.html
+[INFO] ============================================================
+[INFO] PROCESO COMPLETADO
+[INFO] ============================================================
