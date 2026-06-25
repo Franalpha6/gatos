@@ -1,0 +1,87 @@
+---------------------------------------------------------------------------
+MergeError                                Traceback (most recent call last)
+Cell In[1], line 557
+    553     else:
+    554         print(f"\n✅ {nombre_fuente}: sin cambios")
+    555 
+    556 
+--> 557 detectar_nuevos(df_ipi_nuevo, df_ipi_viejo, "IPI Chile")
+    558 detectar_nuevos(df_ositran_nuevo, df_ositran_viejo, "OSITRAN Peru")
+    559 
+    560 if nuevas_alertas_construccion:
+
+Cell In[1], line 545, in detectar_nuevos(df_nuevo, df_viejo, nombre_fuente)
+    541     else:
+    542         columnas_comunes = list(set(df_nuevo.columns).intersection(set(df_viejo.columns)))
+    543         df_nuevo_sub = df_nuevo[columnas_comunes].astype(str)
+    544         df_viejo_sub = df_viejo[columnas_comunes].astype(str)
+--> 545         df_nuevas = df_nuevo_sub.merge(df_viejo_sub, how="outer", indicator=True)
+    546         df_nuevas = df_nuevas[df_nuevas["_merge"] == "left_only"].drop(columns="_merge")
+    547 
+    548     if not df_nuevas.empty:
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\frame.py:12888, in DataFrame.merge(self, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+  12884         self._check_copy_deprecation(copy)
+  12885 
+  12886         from pandas.core.reshape.merge import merge
+  12887 
+> 12888         return merge(
+  12889             self,
+  12890             right,
+  12891             how=how,
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\reshape\merge.py:385, in merge(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+    371     return _cross_merge(
+    372         left_df,
+    373         right_df,
+   (...)    382         validate=validate,
+    383     )
+    384 else:
+--> 385     op = _MergeOperation(
+    386         left_df,
+    387         right_df,
+    388         how=how,
+    389         on=on,
+    390         left_on=left_on,
+    391         right_on=right_on,
+    392         left_index=left_index,
+    393         right_index=right_index,
+    394         sort=sort,
+    395         suffixes=suffixes,
+    396         indicator=indicator,
+    397         validate=validate,
+    398     )
+    399     return op.get_result()
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\reshape\merge.py:1010, in _MergeOperation.__init__(self, left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, indicator, validate)
+   1003     msg = (
+   1004         "Not allowed to merge between different levels. "
+   1005         f"({_left.columns.nlevels} levels on the left, "
+   1006         f"{_right.columns.nlevels} on the right)"
+   1007     )
+   1008     raise MergeError(msg)
+-> 1010 self.left_on, self.right_on = self._validate_left_right_on(left_on, right_on)
+   1012 (
+   1013     self.left_join_keys,
+   1014     self.right_join_keys,
+   (...)   1017     right_drop,
+   1018 ) = self._get_merge_keys()
+   1020 if left_drop:
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\reshape\merge.py:1899, in _MergeOperation._validate_left_right_on(self, left_on, right_on)
+   1897 common_cols = left_cols.intersection(right_cols)
+   1898 if len(common_cols) == 0:
+-> 1899     raise MergeError(
+   1900         "No common columns to perform merge on. "
+   1901         f"Merge options: left_on={left_on}, "
+   1902         f"right_on={right_on}, "
+   1903         f"left_index={self.left_index}, "
+   1904         f"right_index={self.right_index}"
+   1905     )
+   1906 if (
+   1907     not left_cols.join(common_cols, how="inner").is_unique
+   1908     or not right_cols.join(common_cols, how="inner").is_unique
+   1909 ):
+   1910     raise MergeError(f"Data columns not unique: {common_cols!r}")
+
+MergeError: No common columns to perform merge on. Merge options: left_on=None, right_on=None, left_index=False, right_index=False
