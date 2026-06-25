@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------
+SMTPAuthenticationError                   Traceback (most recent call last)
+Cell In[10], line 232
+    228 
+    229     print("\n===== CUERPO DEL CORREO =====")
+    230     print(cuerpo)
+    231 
+--> 232     enviar_correo(
+    233         "ACTUALIZAR BASE DE DATOS - MINING",
+    234         cuerpo,
+    235         to="franco.olivares@sura.pe; rodrigo.murrieta@sura.pe",
+
+Cell In[10], line 63, in enviar_correo(asunto, cuerpo, html, to, cc, imagenes_cid)
+     59     destinatarios = [d.strip() for d in crudos.split(";") if d.strip()]
+     60 
+     61     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+     62         server.starttls()
+---> 63         server.login(SMTP_USER, SMTP_PASS)
+     64         server.sendmail(REMITENTE, destinatarios, msg.as_string())
+     65 
+     66     print("✅ Correo enviado correctamente")
+
+File C:\Program Files\Python314\Lib\smtplib.py:762, in SMTP.login(self, user, password, initial_response_ok)
+    759         last_exception = e
+    761 # We could not login successfully.  Return result of last attempt.
+--> 762 raise last_exception
+
+File C:\Program Files\Python314\Lib\smtplib.py:751, in SMTP.login(self, user, password, initial_response_ok)
+    749 method_name = 'auth_' + authmethod.lower().replace('-', '_')
+    750 try:
+--> 751     (code, resp) = self.auth(
+    752         authmethod, getattr(self, method_name),
+    753         initial_response_ok=initial_response_ok)
+    754     # 235 == 'Authentication successful'
+    755     # 503 == 'Error: already authenticated'
+    756     if code in (235, 503):
+
+File C:\Program Files\Python314\Lib\smtplib.py:669, in SMTP.auth(self, mechanism, authobject, initial_response_ok)
+    667 if code in (235, 503):
+    668     return (code, resp)
+--> 669 raise SMTPAuthenticationError(code, resp)
+
+SMTPAuthenticationError: (535, b'5.7.139 Authentication unsuccessful, the user credentials were incorrect. [SCYP152CA0004.LAMP152.PROD.OUTLOOK.COM 2026-06-25T21:04:56.431Z 08DED29076F2CCC9]')
