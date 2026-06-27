@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[1], line 49
+     45 # ------------------------------------------------------------------ CONFIG ----
+     46 # Ruta al script de producción a auditar. Por defecto, mismo directorio.
+     47 MAIN_SCRIPT = os.environ.get(
+     48     "AUDIT_MAIN_SCRIPT",
+---> 49     os.path.join(os.path.dirname(os.path.abspath(__file__)),
+     50                  "Dashboard_Physical_RIsk_-_24_06.py"))
+     51 
+     52 # Dónde guardar el Excel de auditoría. Por defecto, junto a este script.
+
+NameError: name '__file__' is not defined
