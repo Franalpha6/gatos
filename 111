@@ -1,0 +1,6 @@
+EQUIV_EMPRESAS_FINANCIERO = {
+    "BANCO DE CREDITO": "Credicorp",
+    "MIBANCO": "Credicorp",        # Mibanco es subsidiaria de Credicorp (microfinanzas)
+    "INTERBANK": "Intercorp Perú",
+    "BBVA": "BBVA",
+}
