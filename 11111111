@@ -1,0 +1,316 @@
+import requests
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Point
+import json
+
+# ─── CONFIG ──────────────────────────────────────────────────────────────────
+BASE_URL = (
+    "https://services1.arcgis.com/IOnDXYLCAWAfoO54/arcgis/rest/services"
+    "/Geocatmin_Peligros_Geol%C3%B3gicos_del_Per%C3%BA_2018/FeatureServer"
+)
+LAYER_ID = 1          # ajustar si hay varias capas (ver paso 1)
+OUTPUT_SHP = r"Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.shp"
+OUTPUT_CSV = r"Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.csv"
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── PASO 1: ver qué capas tiene el servicio ──────────────────────────────────
+r = requests.get(BASE_URL, params={"f": "json"}, timeout=30)
+info = r.json()
+print("=== CAPAS DISPONIBLES ===")
+for layer in info.get("layers", []):
+    print(f"  [{layer['id']}] {layer['name']}")
+
+# ── PASO 2: contar registros totales ─────────────────────────────────────────
+count_url = f"{BASE_URL}/{LAYER_ID}/query"
+r = requests.get(count_url, params={
+    "where": "1=1",
+    "returnCountOnly": "true",
+    "f": "json"
+}, timeout=30)
+total = r.json()["count"]
+print(f"\nTotal de eventos: {total:,}")
+
+# ── PASO 3: descarga paginada (ArcGIS limita a 1000-2000 por request) ────────
+features = []
+offset = 0
+page_size = 1000
+
+while offset < total:
+    r = requests.get(count_url, params={
+        "where": "1=1",
+        "outFields": "*",          # todos los campos
+        "returnGeometry": "true",
+        "geometryType": "esriGeometryPoint",
+        "outSR": "4326",           # WGS84
+        "resultOffset": offset,
+        "resultRecordCount": page_size,
+        "f": "geojson"
+    }, timeout=60)
+
+    chunk = r.json()
+    feats = chunk.get("features", [])
+    features.extend(feats)
+    offset += page_size
+    print(f"  Descargados: {min(offset, total):,} / {total:,}", end="\r")
+
+print(f"\nDescarga completa: {len(features):,} eventos")
+
+# ── PASO 4: convertir a GeoDataFrame ─────────────────────────────────────────
+geojson = {"type": "FeatureCollection", "features": features}
+gdf = gpd.GeoDataFrame.from_features(geojson["features"], crs="EPSG:4326")
+
+print("\nColumnas disponibles:")
+print(list(gdf.columns))
+print(f"\nTipos de evento:")
+# ajustar el nombre de columna según lo que imprima arriba
+tipo_col = next((c for c in gdf.columns if "tipo" in c.lower() or "type" in c.lower()), None)
+if tipo_col:
+    print(gdf[tipo_col].value_counts().head(20))
+
+# ── PASO 5: exportar ─────────────────────────────────────────────────────────
+gdf.to_file(OUTPUT_SHP, encoding="utf-8")
+gdf.drop(columns="geometry").to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
+print(f"\nGuardado: {OUTPUT_SHP}")
+print(f"Guardado: {OUTPUT_CSV}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------
+SSLCertVerificationError                  Traceback (most recent call last)
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connectionpool.py:464, in HTTPConnectionPool._make_request(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)
+    463 try:
+--> 464     self._validate_conn(conn)
+    465 except (SocketTimeout, BaseSSLError) as e:
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connectionpool.py:1093, in HTTPSConnectionPool._validate_conn(self, conn)
+   1092 if conn.is_closed:
+-> 1093     conn.connect()
+   1095 # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connection.py:796, in HTTPSConnection.connect(self)
+    794 server_hostname_rm_dot = server_hostname.rstrip(".")
+--> 796 sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+    797     sock=sock,
+    798     cert_reqs=self.cert_reqs,
+    799     ssl_version=self.ssl_version,
+    800     ssl_minimum_version=self.ssl_minimum_version,
+    801     ssl_maximum_version=self.ssl_maximum_version,
+    802     ca_certs=self.ca_certs,
+    803     ca_cert_dir=self.ca_cert_dir,
+    804     ca_cert_data=self.ca_cert_data,
+    805     cert_file=self.cert_file,
+    806     key_file=self.key_file,
+    807     key_password=self.key_password,
+    808     server_hostname=server_hostname_rm_dot,
+    809     ssl_context=self.ssl_context,
+    810     tls_in_tls=tls_in_tls,
+    811     assert_hostname=self.assert_hostname,
+    812     assert_fingerprint=self.assert_fingerprint,
+    813 )
+    814 self.sock = sock_and_verified.socket
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connection.py:975, in _ssl_wrap_socket_and_match_hostname(sock, cert_reqs, ssl_version, ssl_minimum_version, ssl_maximum_version, cert_file, key_file, key_password, ca_certs, ca_cert_dir, ca_cert_data, assert_hostname, assert_fingerprint, server_hostname, ssl_context, tls_in_tls)
+    973         server_hostname = normalized
+--> 975 ssl_sock = ssl_wrap_socket(
+    976     sock=sock,
+    977     keyfile=key_file,
+    978     certfile=cert_file,
+    979     key_password=key_password,
+    980     ca_certs=ca_certs,
+    981     ca_cert_dir=ca_cert_dir,
+    982     ca_cert_data=ca_cert_data,
+    983     server_hostname=server_hostname,
+    984     ssl_context=context,
+    985     tls_in_tls=tls_in_tls,
+    986 )
+    988 try:
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\util\ssl_.py:483, in ssl_wrap_socket(sock, keyfile, certfile, cert_reqs, ca_certs, server_hostname, ssl_version, ciphers, ssl_context, ca_cert_dir, key_password, ca_cert_data, tls_in_tls)
+    481 context.set_alpn_protocols(ALPN_PROTOCOLS)
+--> 483 ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+    484 return ssl_sock
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\util\ssl_.py:527, in _ssl_wrap_socket_impl(sock, ssl_context, tls_in_tls, server_hostname)
+    525     return SSLTransport(sock, ssl_context, server_hostname)
+--> 527 return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+
+File C:\Program Files\Python314\Lib\ssl.py:455, in SSLContext.wrap_socket(self, sock, server_side, do_handshake_on_connect, suppress_ragged_eofs, server_hostname, session)
+    449 def wrap_socket(self, sock, server_side=False,
+    450                 do_handshake_on_connect=True,
+    451                 suppress_ragged_eofs=True,
+    452                 server_hostname=None, session=None):
+    453     # SSLSocket class handles server_hostname encoding before it calls
+    454     # ctx._wrap_socket()
+--> 455     return self.sslsocket_class._create(
+    456         sock=sock,
+    457         server_side=server_side,
+    458         do_handshake_on_connect=do_handshake_on_connect,
+    459         suppress_ragged_eofs=suppress_ragged_eofs,
+    460         server_hostname=server_hostname,
+    461         context=self,
+    462         session=session
+    463     )
+
+File C:\Program Files\Python314\Lib\ssl.py:1076, in SSLSocket._create(cls, sock, server_side, do_handshake_on_connect, suppress_ragged_eofs, server_hostname, context, session)
+   1075                 raise ValueError("do_handshake_on_connect should not be specified for non-blocking sockets")
+-> 1076             self.do_handshake()
+   1077 except:
+
+File C:\Program Files\Python314\Lib\ssl.py:1372, in SSLSocket.do_handshake(self, block)
+   1371         self.settimeout(None)
+-> 1372     self._sslobj.do_handshake()
+   1373 finally:
+
+SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+
+During handling of the above exception, another exception occurred:
+
+SSLError                                  Traceback (most recent call last)
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connectionpool.py:787, in HTTPConnectionPool.urlopen(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)
+    786 # Make the request on the HTTPConnection object
+--> 787 response = self._make_request(
+    788     conn,
+    789     method,
+    790     url,
+    791     timeout=timeout_obj,
+    792     body=body,
+    793     headers=headers,
+    794     chunked=chunked,
+    795     retries=retries,
+    796     response_conn=response_conn,
+    797     preload_content=preload_content,
+    798     decode_content=decode_content,
+    799     **response_kw,
+    800 )
+    802 # Everything went great!
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connectionpool.py:488, in HTTPConnectionPool._make_request(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)
+    487         new_e = _wrap_proxy_error(new_e, conn.proxy.scheme)
+--> 488     raise new_e
+    490 # conn.request() calls http.client.*.request, not the method in
+    491 # urllib3.request. It also calls makefile (recv) on the socket.
+
+SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+
+The above exception was the direct cause of the following exception:
+
+MaxRetryError                             Traceback (most recent call last)
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\adapters.py:645, in HTTPAdapter.send(self, request, stream, timeout, verify, cert, proxies)
+    644 try:
+--> 645     resp = conn.urlopen(
+    646         method=request.method,
+    647         url=url,
+    648         body=request.body,
+    649         headers=request.headers,
+    650         redirect=False,
+    651         assert_same_host=False,
+    652         preload_content=False,
+    653         decode_content=False,
+    654         retries=self.max_retries,
+    655         timeout=timeout,
+    656         chunked=chunked,
+    657     )
+    659 except (ProtocolError, OSError) as err:
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\connectionpool.py:841, in HTTPConnectionPool.urlopen(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)
+    839     new_e = ProtocolError("Connection aborted.", new_e)
+--> 841 retries = retries.increment(
+    842     method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    843 )
+    844 retries.sleep()
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\urllib3\util\retry.py:535, in Retry.increment(self, method, url, response, error, _pool, _stacktrace)
+    534     reason = error or ResponseError(cause)
+--> 535     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    537 log.debug("Incremented Retry for (url='%s'): %r", url, new_retry)
+
+MaxRetryError: HTTPSConnectionPool(host='services1.arcgis.com', port=443): Max retries exceeded with url: /IOnDXYLCAWAfoO54/arcgis/rest/services/Geocatmin_Peligros_Geol%C3%B3gicos_del_Per%C3%BA_2018/FeatureServer?f=json (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)')))
+
+During handling of the above exception, another exception occurred:
+
+SSLError                                  Traceback (most recent call last)
+Cell In[3], line 18
+     14 OUTPUT_CSV = r"Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.csv"
+     15 # ──────────────────────────────────────────────────────────────────────────────
+     16 
+     17 # ── PASO 1: ver qué capas tiene el servicio ──────────────────────────────────
+---> 18 r = requests.get(BASE_URL, params={"f": "json"}, timeout=30)
+     19 info = r.json()
+     20 print("=== CAPAS DISPONIBLES ===")
+     21 for layer in info.get("layers", []):
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\api.py:73, in get(url, params, **kwargs)
+     62 def get(url, params=None, **kwargs):
+     63     r"""Sends a GET request.
+     64 
+     65     :param url: URL for the new :class:`Request` object.
+   (...)     70     :rtype: requests.Response
+     71     """
+---> 73     return request("get", url, params=params, **kwargs)
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\api.py:59, in request(method, url, **kwargs)
+     55 # By using the 'with' statement we are sure the session is closed, thus we
+     56 # avoid leaving sockets open which can trigger a ResourceWarning in some
+     57 # cases, and look like a memory leak in others.
+     58 with sessions.Session() as session:
+---> 59     return session.request(method=method, url=url, **kwargs)
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\sessions.py:592, in Session.request(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)
+    587 send_kwargs = {
+    588     "timeout": timeout,
+    589     "allow_redirects": allow_redirects,
+    590 }
+    591 send_kwargs.update(settings)
+--> 592 resp = self.send(prep, **send_kwargs)
+    594 return resp
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\sessions.py:706, in Session.send(self, request, **kwargs)
+    703 start = preferred_clock()
+    705 # Send the request
+--> 706 r = adapter.send(request, **kwargs)
+    708 # Total elapsed time of the request (approximately)
+    709 elapsed = preferred_clock() - start
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\requests\adapters.py:676, in HTTPAdapter.send(self, request, stream, timeout, verify, cert, proxies)
+    672         raise ProxyError(e, request=request)
+    674     if isinstance(e.reason, _SSLError):
+    675         # This branch is for urllib3 v1.22 and later.
+--> 676         raise SSLError(e, request=request)
+    678     raise ConnectionError(e, request=request)
+    680 except ClosedPoolError as e:
+
+SSLError: HTTPSConnectionPool(host='services1.arcgis.com', port=443): Max retries exceeded with url: /IOnDXYLCAWAfoO54/arcgis/rest/services/Geocatmin_Peligros_Geol%C3%B3gicos_del_Per%C3%BA_2018/FeatureServer?f=json (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)')))
