@@ -1,0 +1,22 @@
+=== CAPAS DISPONIBLES ===
+  [0] Otros_peligros_geologicos
+  [1] peligros_geologicos
+
+Total de eventos: 25,700
+5700 / 25,700
+
+Descarga completa: 25,699 eventos
+
+Columnas disponibles:
+['geometry', 'FID', 'OBJECTID', 'PROYECTO', 'PARAJE', 'TIPO_PELIG', 'PELIGRO_ES', 'GRADO_PELI', 'GRADO_VULN', 'RECOMENDAC', 'DANHOS', 'AUTOR', 'TITULO_EST', 'COD_INT_MU', 'GLOBALID']
+
+Tipos de evento:
+TIPO_PELIG
+Flujo               8754
+Caida               8455
+Deslizamiento       6435
+Mov. Complejo       1292
+Reptacion            713
+Vuelco                49
+Desplaz. Lateral       1
+Name: count, dtype: int64
