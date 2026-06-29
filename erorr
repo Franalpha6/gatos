@@ -1,22 +1,103 @@
-=== CAPAS DISPONIBLES ===
-  [0] Otros_peligros_geologicos
-  [1] peligros_geologicos
+---------------------------------------------------------------------------
+CPLE_AppDefinedError                      Traceback (most recent call last)
+File pyogrio/_io.pyx:2863
+-> 2863 'Could not get source, probably due dynamically evaluated source code.'
 
-Total de eventos: 25,700
-5700 / 25,700
+File pyogrio/_err.pyx:228
+--> 228 'Could not get source, probably due dynamically evaluated source code.'
 
-Descarga completa: 25,699 eventos
+CPLE_AppDefinedError: Failed to create file Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.shp: No such file or directory
 
-Columnas disponibles:
-['geometry', 'FID', 'OBJECTID', 'PROYECTO', 'PARAJE', 'TIPO_PELIG', 'PELIGRO_ES', 'GRADO_PELI', 'GRADO_VULN', 'RECOMENDAC', 'DANHOS', 'AUTOR', 'TITULO_EST', 'COD_INT_MU', 'GLOBALID']
+During handling of the above exception, another exception occurred:
 
-Tipos de evento:
-TIPO_PELIG
-Flujo               8754
-Caida               8455
-Deslizamiento       6435
-Mov. Complejo       1292
-Reptacion            713
-Vuelco                49
-Desplaz. Lateral       1
-Name: count, dtype: int64
+DataLayerError                            Traceback (most recent call last)
+Cell In[2], line 72
+     68 if tipo_col:
+     69     print(gdf[tipo_col].value_counts().head(20))
+     70 
+     71 # ── PASO 5: exportar ─────────────────────────────────────────────────────────
+---> 72 gdf.to_file(OUTPUT_SHP, encoding="utf-8")
+     73 gdf.drop(columns="geometry").to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
+     74 print(f"\nGuardado: {OUTPUT_SHP}")
+     75 print(f"Guardado: {OUTPUT_CSV}")
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\geopandas\geodataframe.py:1632, in GeoDataFrame.to_file(self, filename, driver, schema, index, **kwargs)
+   1538 """Write the ``GeoDataFrame`` to a file.
+   1539 
+   1540 By default, an ESRI shapefile is written, but any OGR data source
+   (...)   1628 
+   1629 """
+   1630 from geopandas.io.file import _to_file
+-> 1632 _to_file(self, filename, driver, schema, index, **kwargs)
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\geopandas\io\file.py:731, in _to_file(df, filename, driver, schema, index, mode, crs, engine, metadata, **kwargs)
+    728     raise ValueError(f"'mode' should be one of 'w' or 'a', got '{mode}' instead")
+    730 if engine == "pyogrio":
+--> 731     _to_file_pyogrio(df, filename, driver, schema, crs, mode, metadata, **kwargs)
+    732 elif engine == "fiona":
+    733     _to_file_fiona(df, filename, driver, schema, crs, mode, metadata, **kwargs)
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\geopandas\io\file.py:793, in _to_file_pyogrio(df, filename, driver, schema, crs, mode, metadata, **kwargs)
+    790 if not df.columns.is_unique:
+    791     raise ValueError("GeoDataFrame cannot contain duplicated column names.")
+--> 793 pyogrio.write_dataframe(df, filename, driver=driver, metadata=metadata, **kwargs)
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pyogrio\geopandas.py:948, in write_dataframe(df, path, layer, driver, encoding, geometry_type, promote_to_multi, nan_as_null, append, use_arrow, dataset_metadata, layer_metadata, metadata, dataset_options, layer_options, **kwargs)
+    945         field_data.append(values)
+    946         field_mask.append(None)
+--> 948 write(
+    949     path,
+    950     layer=layer,
+    951     driver=driver,
+    952     geometry=geometry,
+    953     field_data=field_data,
+    954     field_mask=field_mask,
+    955     fields=fields,
+    956     crs=crs,
+    957     geometry_type=geometry_type,
+    958     encoding=encoding,
+    959     promote_to_multi=promote_to_multi,
+    960     nan_as_null=nan_as_null,
+    961     append=append,
+    962     dataset_metadata=dataset_metadata,
+    963     layer_metadata=layer_metadata,
+    964     metadata=metadata,
+    965     dataset_options=dataset_options,
+    966     layer_options=layer_options,
+    967     gdal_tz_offsets=gdal_tz_offsets,
+    968     **kwargs,
+    969 )
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pyogrio\raw.py:733, in write(path, geometry, field_data, fields, field_mask, layer, driver, geometry_type, crs, encoding, promote_to_multi, nan_as_null, append, dataset_metadata, layer_metadata, metadata, dataset_options, layer_options, gdal_tz_offsets, **kwargs)
+    728 # preprocess kwargs and split in dataset and layer creation options
+    729 dataset_kwargs, layer_kwargs = _preprocess_options_kwargs(
+    730     driver, dataset_options, layer_options, kwargs
+    731 )
+--> 733 ogr_write(
+    734     path,
+    735     layer=layer,
+    736     driver=driver,
+    737     geometry=geometry,
+    738     geometry_type=geometry_type,
+    739     field_data=list(field_data) if field_data is not None else None,
+    740     field_mask=list(field_mask) if field_mask is not None else None,
+    741     fields=list(fields) if fields is not None else None,
+    742     crs=crs,
+    743     encoding=encoding,
+    744     promote_to_multi=promote_to_multi,
+    745     nan_as_null=nan_as_null,
+    746     append=append,
+    747     dataset_metadata=dataset_metadata,
+    748     layer_metadata=layer_metadata,
+    749     dataset_kwargs=dataset_kwargs,
+    750     layer_kwargs=layer_kwargs,
+    751     gdal_tz_offsets=gdal_tz_offsets,
+    752 )
+
+File pyogrio/_io.pyx:2986
+-> 2986 'Could not get source, probably due dynamically evaluated source code.'
+
+File pyogrio/_io.pyx:2879
+-> 2879 'Could not get source, probably due dynamically evaluated source code.'
+
+DataLayerError: Failed to create file Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.shp: No such file or directory
