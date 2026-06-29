@@ -1,25 +1,25 @@
 ---------------------------------------------------------------------------
-CPLE_AppDefinedError                      Traceback (most recent call last)
-File pyogrio/_io.pyx:2863
--> 2863 'Could not get source, probably due dynamically evaluated source code.'
+CPLE_OpenFailedError                      Traceback (most recent call last)
+File pyogrio/_io.pyx:2561
+-> 2561 'Could not get source, probably due dynamically evaluated source code.'
 
 File pyogrio/_err.pyx:228
 --> 228 'Could not get source, probably due dynamically evaluated source code.'
 
-CPLE_AppDefinedError: Failed to create file Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.shp: No such file or directory
+CPLE_OpenFailedError: sqlite3_open(Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.gpkg) failed: unable to open database file
 
 During handling of the above exception, another exception occurred:
 
-DataLayerError                            Traceback (most recent call last)
-Cell In[2], line 72
-     68 if tipo_col:
-     69     print(gdf[tipo_col].value_counts().head(20))
-     70 
-     71 # ── PASO 5: exportar ─────────────────────────────────────────────────────────
----> 72 gdf.to_file(OUTPUT_SHP, encoding="utf-8")
-     73 gdf.drop(columns="geometry").to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
-     74 print(f"\nGuardado: {OUTPUT_SHP}")
-     75 print(f"Guardado: {OUTPUT_CSV}")
+DataSourceError                           Traceback (most recent call last)
+Cell In[6], line 5
+      1 # ── PASO 5: exportar ─────────────────────────────────────────────────────────
+      2 # GeoPackage reserva "FID" como PK; renombrar o soltar para evitar conflicto
+      3 gdf_export = gdf.drop(columns=[c for c in ["FID"] if c in gdf.columns])
+      4 
+----> 5 gdf_export.to_file(OUTPUT_GPKG, driver="GPKG", layer="peligros_geologicos")
+      6 gdf_export.drop(columns="geometry").to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
+      7 print(f"\nGuardado: {OUTPUT_GPKG}")
+      8 print(f"Guardado: {OUTPUT_CSV}")
 
 File ~\PyCharmMiscProject\.venv\Lib\site-packages\geopandas\geodataframe.py:1632, in GeoDataFrame.to_file(self, filename, driver, schema, index, **kwargs)
    1538 """Write the ``GeoDataFrame`` to a file.
@@ -97,7 +97,10 @@ File ~\PyCharmMiscProject\.venv\Lib\site-packages\pyogrio\raw.py:733, in write(p
 File pyogrio/_io.pyx:2986
 -> 2986 'Could not get source, probably due dynamically evaluated source code.'
 
-File pyogrio/_io.pyx:2879
--> 2879 'Could not get source, probably due dynamically evaluated source code.'
+File pyogrio/_io.pyx:2801
+-> 2801 'Could not get source, probably due dynamically evaluated source code.'
 
-DataLayerError: Failed to create file Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.shp: No such file or directory
+File pyogrio/_io.pyx:2577
+-> 2577 'Could not get source, probably due dynamically evaluated source code.'
+
+DataSourceError: sqlite3_open(Z:\Mesa de Inversiones\Bottom-Up\2 Proceso de Inversión Renta Fija\Corporates - Emisiones\Crédito - BU\3. ESG\21. TCFD\Reporte TCFD\Reporte TCFD\Mapeo de Distribución de Distritos - Riesgos Fisicos\Python\Expected Loss\Geocatmin\peligros_geologicos_peru.gpkg) failed: unable to open database file
