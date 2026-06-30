@@ -1,0 +1,81 @@
+Estoy trabajando con archivos Excel provenientes de la SBS (Superintendencia de Banca, Seguros y AFP) del Perú. Estos archivos tienen estructuras semi-consistentes pero con variaciones importantes que generan problemas al procesarlos automáticamente en Python.
+
+Quiero que analices el problema desde cero y propongas una solución robusta y general, sin asumir implementaciones específicas como loops con índices fijos.
+
+## 🧾 Tipo de archivos que manejo
+
+Trabajo con distintos tipos de reportes, pero en este caso específico son archivos de:
+
+"Ranking de Depósitos por Tipo"
+
+Ejemplo de nombre de archivo:
+- B-2320-my2026.XLS
+
+## 📊 Estructura del archivo
+
+Cada archivo contiene múltiples secciones dentro de la misma hoja, en este orden:
+
+1. "Depósitos a la Vista"
+2. "Depósitos de Ahorro"
+3. "Depósitos a Plazo"
+
+Cada sección tiene un bloque de datos con:
+
+- Ranking (posición)
+- Nombre de entidad financiera
+- Monto
+- Participación (%)
+- Porcentaje acumulado
+
+Sin embargo, la estructura tiene las siguientes características problemáticas:
+
+## ⚠️ Problemas estructurales
+
+1. Las secciones están apiladas verticalmente (no separadas en hojas)
+2. Hay filas intermedias con texto (headers repetidos, títulos, etc.)
+3. Los nombres de las columnas no están en formato limpio
+4. Hay valores como "-" que rompen la conversión numérica
+5. Algunas secciones pueden tener diferente número de filas o columnas implícitas
+6. Al hacer transformaciones (transpose, limpieza, etc.), los DataFrames resultantes pueden:
+   - Tener distinto número de columnas
+   - Tener columnas duplicadas
+   - Perder alineación entre sí
+
+## 🧠 Qué necesito lograr
+
+Quiero construir un pipeline que:
+
+1. Detecte automáticamente cada sección del archivo (sin hardcodear posiciones)
+2. Extraiga cada bloque como un DataFrame limpio
+3. Normalice las columnas a un formato consistente
+4. Maneje diferencias estructurales entre secciones
+5. Permita iterar sobre las entidades financieras sin asumir que todas las secciones tienen el mismo número de columnas
+6. Sea robusto ante variaciones mensuales en los archivos
+
+## 🚫 Restricciones
+
+- NO quiero soluciones basadas en índices fijos tipo df.columns[i]
+- NO quiero asumir que todos los bloques tienen el mismo tamaño
+- NO quiero soluciones frágiles que dependan del orden perfecto del archivo
+
+## ✅ Lo que sí quiero
+
+- Un enfoque estructural
+- Uso inteligente de pandas
+- Posibles estrategias como:
+  - detección por patrones de texto
+  - segmentación dinámica del archivo
+  - transformación a formato largo (tidy data)
+  - uso de melt/pivot si aplica
+- Código claro y reusable
+
+## 🎯 Output esperado
+
+Quiero que:
+
+1. Me expliques el enfoque conceptual
+2. Propongas una arquitectura de solución
+3. Me des un ejemplo de implementación en Python (pandas)
+4. Consideres edge cases reales como los que describí
+
+No limites tu respuesta a una sola estrategia. Si ves múltiples enfoques posibles, compáralos y sugiere el mejor.
