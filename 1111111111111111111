@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[1], line 710
+    706 # %%
+    707 # Fondo 1
+    708 DQ_HA_F1 = Base_Sistema_F[Base_Sistema_F["AFP-Fondo"].str.contains("HA-FONDO1")]
+    709 DQ_HA_F1 = DQ_HA_F1.drop(["AFP-Fondo"], axis=1)
+--> 710 DQ_HA_F1_O = DQ_HA_F1.reindex(columns=Lista_Isins).copy()
+    711 DQ_HA_F1_O = DQ_HA_F1_O.fillna(0).copy()
+    712 DQ_HA_F1_O = DQ_HA_F1_O.fillna(0).copy()
+    713 # %%
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\frame.py:6078, in DataFrame.reindex(self, labels, index, columns, axis, method, copy, level, fill_value, limit, tolerance)
+   6074         in the original DataFrame, use the ``fillna()`` method.
+   6075 
+   6076         See the :ref:`user guide <basics.reindexing>` for more.
+   6077         """
+-> 6078         return super().reindex(
+   6079             labels=labels,
+   6080             index=index,
+   6081             columns=columns,
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\generic.py:5476, in NDFrame.reindex(self, labels, index, columns, axis, method, copy, level, fill_value, limit, tolerance)
+   5472         if self._needs_reindex_multi(axes, method, level):
+   5473             return self._reindex_multi(axes, fill_value)
+   5474 
+   5475         # perform the reindex on the axes
+-> 5476         return self._reindex_axes(
+   5477             axes, level, limit, tolerance, method, fill_value
+   5478         ).__finalize__(self, method="reindex")
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\generic.py:5498, in NDFrame._reindex_axes(self, axes, level, limit, tolerance, method, fill_value)
+   5494             if labels is None:
+   5495                 continue
+   5496 
+   5497             ax = self._get_axis(a)
+-> 5498             new_index, indexer = ax.reindex(
+   5499                 labels, level=level, limit=limit, tolerance=tolerance, method=method
+   5500             )
+   5501 
+
+File ~\PyCharmMiscProject\.venv\Lib\site-packages\pandas\core\indexes\base.py:4253, in Index.reindex(self, target, method, level, limit, tolerance)
+   4250     raise ValueError("cannot handle a non-unique multi-index!")
+   4251 elif not self.is_unique:
+   4252     # GH#42568
+-> 4253     raise ValueError("cannot reindex on an axis with duplicate labels")
+   4254 else:
+   4255     indexer, _ = self.get_indexer_non_unique(target)
+
+ValueError: cannot reindex on an axis with duplicate labels
+
+
+
+2026-07-01 01:20:43,053 | WARNING | 21 instrumento(s) en Parametria sin Moneda asignada (se conservan en Lista_Isins, pero NO se les aplicará conversión de FX): ['MPLE PE', 'BVL', 'CASAGRC1', 'ENTEL', 'FVI', 'FVI2', 'INREF', 'ISA', 'LAUR', 'MMG LTD', 'PAAS', 'PARAUCO', 'PTAL', 'RIO', 'RIPLEY', 'FALABELLA', 'THO', 'TV', 'TFPM', 'WPM', 'Cash']
+2026-07-01 01:20:46,248 | WARNING | Could not determine dtype for column 63, falling back to string
+2026-07-01 01:21:25,809 | WARNING | Could not determine dtype for column 61, falling back to string
+2026-07-01 01:21:25,811 | WARNING | Could not determine dtype for column 62, falling back to string
+2026-07-01 01:21:25,813 | WARNING | Could not determine dtype for column 63, falling back to string
+2026-07-01 01:21:25,815 | WARNING | Could not determine dtype for column 64, falling back to string
+2026-07-01 01:21:52,181 | INFO    | DQ IN: última fecha en base = 2026-06-26 00:00:00
+2026-07-01 01:21:57,870 | INFO    | DQ SIS: última fecha en base = 2025-12-26 00:00:00
+Soles
+DOL
+GBP
+CAD
